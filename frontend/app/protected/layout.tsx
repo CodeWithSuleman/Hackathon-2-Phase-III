@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { useAuth } from '../../components/providers/auth-provider';
 import { ProtectedRoute } from '../../components/providers/protected-route';
 import { useRouter } from 'next/navigation';
@@ -25,24 +26,30 @@ const ProtectedLayoutContent: React.FC<{ children: React.ReactNode }> = ({ child
                 <h1 className="text-xl font-semibold text-foreground">Todo App</h1>
               </div>
               <nav className="ml-6 flex space-x-8">
-                <a
+                <Link
                   href="/protected/dashboard"
                   className="border-transparent text-muted-foreground hover:bg-accent hover:text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                 >
                   Dashboard
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/protected/tasks"
                   className="border-transparent text-muted-foreground hover:bg-accent hover:text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                 >
                   Tasks
-                </a>
-                <a
+                </Link>
+                <Link
+                  href="/protected/chat"
+                  className="border-transparent text-muted-foreground hover:bg-accent hover:text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                >
+                  Chat
+                </Link>
+                <Link
                   href="/protected/profile"
                   className="border-transparent text-muted-foreground hover:bg-accent hover:text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                 >
                   Profile
-                </a>
+                </Link>
               </nav>
             </div>
             <div className="flex items-center">

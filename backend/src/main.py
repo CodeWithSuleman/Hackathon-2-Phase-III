@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from slowapi.middleware import SlowAPIMiddleware
 from .api.todos import router as todos_router
 from .api.auth import router as auth_router
+from .api.chat import router as chat_router
 from .config import settings
 from .logging_config import setup_logging
 from .database import create_db_and_tables
@@ -28,13 +29,14 @@ def create_app() -> FastAPI:
         redoc_url="/redoc"
     )
 
-    # Add CORS middleware
+    # Add CORS middleware with configurable origins
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["https://giaic-hackathon-2-phase-ii.vercel.app/"],  # Frontend origin
+        allow_origins=settings.ALLOWED_ORIGINS,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        expose_headers=["*"],
     )
 
     # Add rate limiting middleware
@@ -46,6 +48,7 @@ def create_app() -> FastAPI:
     # Include API routers - only todos API for backend foundation
     app.include_router(todos_router, prefix=f"{settings.API_V1_STR}/todos", tags=["todos"])
     app.include_router(auth_router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
+    app.include_router(chat_router, prefix=f"{settings.API_V1_STR}", tags=["chat"])
 
     # Create database tables on startup
     @app.on_event("startup")

@@ -13,22 +13,22 @@ interface ThemeContextType {
 // Create theme context
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+// Helper function to get initial theme (runs only on client)
+const getInitialTheme = (): 'light' | 'dark' => {
+  if (typeof window === 'undefined') return 'dark';
+  const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+  if (savedTheme) return savedTheme;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
+
 // Theme Provider Component
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [isMounted, setIsMounted] = useState(false);
 
-  // Initialize theme from localStorage or system preference
+  // Initialize theme from localStorage or system preference (client-side only)
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    if (savedTheme) {
-      setTheme(savedTheme);
-    } else {
-      setTheme(systemPrefersDark ? 'dark' : 'light');
-    }
-
+    setTheme(getInitialTheme());
     setIsMounted(true);
   }, []);
 

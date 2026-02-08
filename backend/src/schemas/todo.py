@@ -1,9 +1,10 @@
 """
 Todo schemas for the Todo Web Application - Backend Only
 """
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, field_serializer
 from datetime import datetime
 from typing import Optional
+import uuid
 
 
 class TodoBase(BaseModel):
@@ -32,11 +33,15 @@ class TodoUpdate(BaseModel):
 
 
 class TodoResponse(TodoBase):
-    """Schema for Todo response"""
-    id: str
-    user_id: str
+    """Schema for Todo response with automatic UUID serialization"""
+    id: uuid.UUID
+    user_id: uuid.UUID
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer('id', 'user_id')
+    def serialize_uuid(self, value: uuid.UUID) -> str:
+        """Convert UUID to string for JSON serialization"""
+        return str(value)

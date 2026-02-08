@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -13,7 +12,7 @@ export default function NotFound() {
         <div className="text-9xl font-bold text-gray-400 mb-4">404</div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Page Not Found</h1>
         <p className="text-gray-600 mb-6">
-          Sorry, we couldn't find the page <code className="bg-gray-100 px-1 rounded">{pathname}</code>.
+          Sorry, we couldn&apos;t find the page <code className="bg-gray-100 px-1 rounded">{pathname}</code>.
         </p>
         <Link
           href="/"

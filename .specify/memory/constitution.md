@@ -1,29 +1,39 @@
 <!--
----
 Sync Impact Report
 ---
-Version change: 0.1.0 → 1.0.0
+Version change: 1.0.0 → 1.1.0
 Modified principles:
-- PRINCIPLE_1_NAME → Specification-driven development
-- PRINCIPLE_2_NAME → Security-first architecture
-- PRINCIPLE_3_NAME → Clear separation of concerns
-- PRINCIPLE_4_NAME → Deterministic, reproducible agent execution
-- PRINCIPLE_5_NAME → Production-readiness over demo-only shortcuts
+- Specification-driven development → Specification-driven development
+- Security-first architecture → Security-first architecture
+- Clear separation of concerns → Clear separation of concerns
+- Deterministic, reproducible agent execution → Deterministic, reproducible agent execution
+- Production-readiness over demo-only shortcuts → Production-readiness over demo-only shortcuts
 Added sections:
-- Key Standards
-- Technology Constraints
-- Security Standards
-- Development Constraints
-- Functional Requirements
-- Quality Requirements
-- Success Criteria
+- Core Principles (VI. Agent-first, tool-based execution only)
+- Core Principles (VII. Stateless services with database-persisted context)
+- Core Principles (VIII. Deterministic and reproducible AI behavior)
+- Key Standards (AI agents may act only via MCP tools)
+- Key Standards (MCP tools must be stateless and enforce user authorization)
+- Key Standards (All agent tool calls must be logged and traceable)
+- Key Standards (No AI-initiated direct database access)
+- Security Standards (Chat endpoints require JWT authentication)
+- Security Standards (User identity must come from JWT, not user input)
+- Security Standards (Cross-user access is strictly forbidden)
+- Security Standards (Unauthorized access returns 401/403)
+- Persistence Rules (Conversation and message history must be stored in database)
+- Persistence Rules (Server must reconstruct context on every request)
+- Persistence Rules (System must function correctly after server restart)
+- Success Criteria (Users can manage todos via natural language)
+- Success Criteria (AI correctly selects and executes MCP tools)
+- Success Criteria (Conversation context resumes reliably)
+- Success Criteria (System remains stateless and secure)
 Removed sections:
-- SECTION_2_NAME
-- SECTION_3_NAME
 Templates requiring updates:
-- ✅ .specify/templates/plan-template.md
-- ✅ .specify/templates/spec-template.md
-- ✅ .specify/templates/tasks-template.md
+- ⚠️ .specify/templates/plan-template.md
+- ⚠️ .specify/templates/spec-template.md
+- ⚠️ .specify/templates/tasks-template.md
+- ⚠️ .specify/templates/commands/sp.constitution.md
+Follow-up TODOs:
 -->
 
 # Full-Stack Multi-User Todo Web Application (Agentic Dev Stack) Constitution
@@ -45,12 +55,25 @@ The agent's behavior must be deterministic and reproducible to ensure consistent
 ### V. Production-readiness over demo-only shortcuts
 All development must prioritize production-level quality, avoiding shortcuts that are unsuitable for a real-world deployment environment.
 
+### VI. Agent-first, tool-based execution only
+AI agents may act only via MCP tools. All agent behaviors must be mediated through standardized interfaces rather than direct system manipulation.
+
+### VII. Stateless services with database-persisted context
+Services must maintain no in-memory state between requests. All context must be persisted in the database and reconstructed on demand to ensure scalability and reliability.
+
+### VIII. Deterministic and reproducible AI behavior
+AI behavior must be consistent and predictable, producing the same outputs for identical inputs and specifications to ensure system reliability and debuggability.
+
 ## Key Standards
 - All features must be traceable to written specifications.
 - The REST API must strictly follow defined endpoints and HTTP semantics.
 - Authentication must be enforced on every protected route.
 - User data isolation must be guaranteed at the API and database level.
 - All generated code must align with the declared tech stack only.
+- AI agents may act only via MCP tools.
+- MCP tools must be stateless and enforce user authorization.
+- All agent tool calls must be logged and traceable.
+- No AI-initiated direct database access.
 
 ## Technology Constraints
 - **Frontend**: Next.js 16+ (App Router)
@@ -67,6 +90,10 @@ All development must prioritize production-level quality, avoiding shortcuts tha
 - The User ID from the JWT must match the route-level user context.
 - Unauthorized requests must return HTTP 401.
 - Cross-user data access is strictly forbidden.
+- Chat endpoints require JWT authentication.
+- User identity must come from JWT, not user input.
+- Cross-user access is strictly forbidden.
+- Unauthorized access returns 401/403.
 
 ## Development Constraints
 - No manual code edits are allowed.
@@ -74,6 +101,11 @@ All development must prioritize production-level quality, avoiding shortcuts tha
 - Each phase must be reviewable and auditable.
 - The backend and frontend must operate as independent services.
 - Stateless authentication is required (no backend session storage).
+
+## Persistence Rules
+- Conversation and message history must be stored in database.
+- Server must reconstruct context on every request.
+- System must function correctly after server restart.
 
 ## Functional Requirements
 - Implement all 5 Basic Level Todo features.
@@ -96,8 +128,12 @@ All development must prioritize production-level quality, avoiding shortcuts tha
 - JWT-based authentication is verified end-to-end.
 - The application runs successfully in a real deployment environment.
 - The project demonstrates a complete Agentic Dev Stack workflow.
+- Users can manage todos via natural language.
+- AI correctly selects and executes MCP tools.
+- Conversation context resumes reliably.
+- System remains stateless and secure.
 
 ## Governance
 This constitution supersedes all other practices. Amendments require documentation, approval, and a migration plan. All pull requests and reviews must verify compliance with this constitution. Complexity must be justified.
 
-**Version**: 1.0.0 | **Ratified**: 2026-01-28 | **Last Amended**: 2026-01-28
+**Version**: 1.1.0 | **Ratified**: 2026-01-28 | **Last Amended**: 2026-02-05

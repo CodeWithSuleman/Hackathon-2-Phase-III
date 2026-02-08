@@ -2,7 +2,7 @@
 Configuration settings for the Todo Web Application
 """
 import os
-from typing import Optional
+from typing import Optional, List
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
 
@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables"""
 
     # Database settings
-    DATABASE_URL: str = os.getenv("DATABASE_URL")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "")
 
     # JWT settings
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production")
@@ -23,8 +23,18 @@ class Settings(BaseSettings):
 
     # Application settings
     APP_NAME: str = "Todo Web Application"
-    DEBUG: bool = True
+    DEBUG: bool = os.getenv("DEBUG", "false").lower() == "true"
     API_V1_STR: str = "/api/v1"
+
+    # CORS settings - allowed origins
+    ALLOWED_ORIGINS: List[str] = os.getenv(
+        "ALLOWED_ORIGINS",
+        "http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001"
+    ).split(",")
+
+    # OpenAI settings
+    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
+    OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
 
     class Config:
         env_file = ".env"

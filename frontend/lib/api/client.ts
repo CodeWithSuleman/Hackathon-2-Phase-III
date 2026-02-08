@@ -71,7 +71,15 @@ class ApiClient {
         throw { ...errorData, message: errorMessage };
       }
 
-      const result = await response.json();
+      // Safely parse JSON response
+      let result;
+      try {
+        const text = await response.text();
+        result = text ? JSON.parse(text) : {};
+      } catch (parseError) {
+        console.error('Failed to parse response as JSON:', parseError);
+        throw new Error('Invalid response from server');
+      }
 
       // Show success notifications for certain operations
       if (options.method === 'POST' && endpoint.includes('/auth/signup')) {
@@ -90,8 +98,8 @@ class ApiClient {
     } catch (error) {
       console.error(`API request failed: ${url}`, error);
 
-      // Handle network errors
-      if (error instanceof TypeError && error.message.includes('fetch')) {
+      // Handle network errors (Failed to fetch)
+      if (error instanceof TypeError) {
         toast.error('Network error. Please check your connection and try again.');
         throw new Error('Network error: Unable to connect to the server');
       }
@@ -115,7 +123,7 @@ class ApiClient {
         access_token?: string;
         token?: string;
         expires_in?: number;
-        user?: any;
+        user?: { id: string; email: string; name: string; created_at?: string };
       }>('/api/v1/auth/signup', {
         method: 'POST',
         body: JSON.stringify(userData),

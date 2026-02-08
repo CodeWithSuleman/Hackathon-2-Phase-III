@@ -3,8 +3,9 @@ Authentication API endpoints for the Todo Web Application - Backend Only
 """
 import re
 from datetime import datetime, timedelta
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+import json
 from jose import jwt
 from jose.exceptions import JWTError
 from src.config import settings
@@ -495,10 +496,11 @@ def logout():
     return {"message": "Successfully logged out"}
 
 
-@router.get("/me", response_model=UserRead)
-def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_session)):
+@router.get("/me")
+def get_me(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_session)):
     """
-    Get current authenticated user's information
+    Get current authenticated user's information.
+    Returns user data with properly serialized fields.
     """
     try:
         token = credentials.credentials
@@ -521,7 +523,20 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        return user
+        # Build response manually to avoid any UUID serialization issues
+        user_data = {
+            "id": str(user.id) if user.id else None,
+            "email": str(user.email) if user.email else None,
+            "name": str(user.name) if user.name else None,
+            "created_at": user.created_at.isoformat() if user.created_at else None,
+            "updated_at": user.updated_at.isoformat() if user.updated_at else None
+        }
+
+        # Return raw Response to bypass FastAPI's response validation
+        return Response(
+            content=json.dumps(user_data),
+            media_type="application/json"
+        )
     except HTTPException:
         # Re-raise HTTP exceptions
         raise

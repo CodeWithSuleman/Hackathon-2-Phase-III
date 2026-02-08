@@ -9,6 +9,7 @@ from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from .config import settings
 from .logging_config import get_logger
+import uuid
 
 
 logger = get_logger(__name__)
@@ -30,6 +31,11 @@ def create_access_token(data: dict, expires_delta: timedelta = None, expires_del
         Encoded JWT token string
     """
     to_encode = data.copy()
+
+    # Convert UUID objects to strings for JSON serialization
+    for key, value in to_encode.items():
+        if isinstance(value, uuid.UUID):
+            to_encode[key] = str(value)
 
     if expires_delta_minutes is not None:
         expire = datetime.utcnow() + timedelta(minutes=expires_delta_minutes)
@@ -75,6 +81,21 @@ def get_current_user_id(
     """Extract the current user_id from the JWT token"""
     token = credentials.credentials
 
+    payload = decode_access_token(token)
+    user_id: Optional[str] = payload.get("sub")
+
+    if user_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    return user_id
+
+
+async def get_current_user_from_token(token: str) -> str:
+    """Async function to get current user from token - for AI Backend & MCP Tooling"""
     payload = decode_access_token(token)
     user_id: Optional[str] = payload.get("sub")
 

@@ -37,7 +37,7 @@ def get_todos(
         )
 
 
-@router.post("/", response_model=TodoResponse)
+@router.post("/")
 def create_todo(
     todo_data: TodoCreate,
     current_user_id: str = Depends(get_current_user_id),
@@ -74,7 +74,19 @@ def create_todo(
             priority=todo_data.priority,
             due_date=todo_data.due_date
         )
-        return todo
+
+        # Manually convert UUIDs to strings for response
+        return {
+            "id": str(todo.id),
+            "user_id": str(todo.user_id),
+            "title": todo.title,
+            "description": todo.description,
+            "completed": todo.completed,
+            "priority": todo.priority,
+            "due_date": todo.due_date,
+            "created_at": todo.created_at.isoformat(),
+            "updated_at": todo.updated_at.isoformat()
+        }
     except HTTPException:
         # Re-raise HTTP exceptions
         raise

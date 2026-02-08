@@ -5,6 +5,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.pool import QueuePool
 from sqlmodel import Session, SQLModel
 from .config import settings
+from .models.todo import Todo  # Existing model
+from .models.user import User  # Existing model
+from .models.conversation import Conversation  # New model for AI Backend & MCP Tooling
+from .models.message import Message  # New model for AI Backend & MCP Tooling
 
 # Create the database engine
 # Use the configured database URL (Neon PostgreSQL), fallback to SQLite only if not available

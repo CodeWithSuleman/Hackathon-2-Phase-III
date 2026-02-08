@@ -3,8 +3,8 @@ Todo service for the Todo Web Application - Backend Only
 """
 from typing import List, Optional
 from sqlmodel import Session, select
-from ..models.todo import Todo
-from ..logging_config import get_logger
+from src.models.todo import Todo
+from src.logging_config import get_logger
 
 
 logger = get_logger(__name__)
